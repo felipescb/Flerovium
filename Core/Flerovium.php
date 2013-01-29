@@ -30,7 +30,7 @@ class Flerovium
 
 	private function getPosts($cat = null)
 	{
-		$dir = getcwd() . '\Blog';
+		$dir = getcwd() . '\Blog\\';
 		$posts = array();
 		if(is_null($cat))
 		{
@@ -52,12 +52,15 @@ class Flerovium
 				$posts[$i++]['postName'] = $p[count($p)-1];
 			}
 		} else {
-			$dir .= $cat.'/';
+			$dir .= $cat.'\\';
 			$iterator = new RecursiveDirectoryIterator($dir);
 			$recursiveIterator = new RecursiveIteratorIterator($iterator);
+			$i = 0;
 			foreach ( $recursiveIterator as $entry ) {
-				$posts[] =  $entry->getFilename();
+				$posts[$i]['postCategory'] = $this->category;
+				$posts[$i++]['postName'] =  $entry->getFilename();
 			}
+
 		}
 		return $posts;
 	}
@@ -141,9 +144,36 @@ class Flerovium
 
 	}
 
+	public function renderCat()
+	{
+		$posts = $this->getPosts($this->category);
+
+		ob_start();
+			try	{
+			$buffer = file_get_contents("Template/{$this->theme}/category.php");
+
+			$er     = "/\{\{Category\}\}/";
+            $buffer = preg_replace($er, $this->category, $buffer);
+
+            $a = $this->generatePostHTML($posts);
+
+			$er     = "/\{\{CategoryPosts\}\}/";
+			$buffer = preg_replace($er, $a, $buffer);
+
+            echo $buffer;
+
+			ob_end_flush();
+		} catch(Exception $e) {
+			ob_clean();
+			echo $e->getMessage();
+			ob_end_flush();
+		}
+	}
+
 	private function renderControl()
 	{
-		if(is_null($this->category)) $this->renderHome();
+		if(is_null($this->category) && is_null($this->post)) $this->renderHome();
+		if(is_null($this->post) && !is_null($this->category)) $this->renderCat();
 	}
 
 
