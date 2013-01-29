@@ -1,7 +1,5 @@
 <?php
 
-require 'Render.php';
-
 class Flerovium
 {
 
@@ -32,14 +30,26 @@ class Flerovium
 
 	private function getPosts($cat = null)
 	{
-		$dir = getcwd() . '/Blog/';
+		$dir = getcwd() . '\Blog';
 		$posts = array();
 		if(is_null($cat))
 		{
 			$iterator = new RecursiveDirectoryIterator($dir);
 			$recursiveIterator = new RecursiveIteratorIterator($iterator);
 			foreach ( $recursiveIterator as $entry ) {
-				$posts[] = $entry->getFilename();
+				$posts[] = $entry->getPathname();
+			}
+			//TODO : Refatorar isso para algo descente
+			foreach($posts as $p){
+				$aux[] = explode("\\",$p);
+			}
+
+			$posts = '';
+			$i = 0;
+
+			foreach($aux as $p){
+				$posts[$i]['postCategory'] = $p[count($p)-2];
+				$posts[$i++]['postName'] = $p[count($p)-1];
 			}
 		} else {
 			$dir .= $cat.'/';
@@ -71,6 +81,37 @@ class Flerovium
 		return $html;
 	}
 
+	private function getPostContent($category,$postname){
+		return file_get_contents("Blog/{$category}/{$postname}");
+	}
+
+	private function generatePostArray($postsReferences)
+	{
+		$helper = 0;
+		foreach($postsReferences as $post)
+		{
+			$content[$helper]['title'] = $post['postName'];
+			$content[$helper++]['text'] = $this->getPostContent($post['postCategory'],$post['postName']);
+		}
+
+		return $content;
+	}
+
+	private function generatePostHTML($posts)
+	{
+		$cont = $this->generatePostArray($posts);
+		$html = '';
+
+		foreach($cont as $c){
+			$html .= "<div class='post'>";
+			$html .= "<h3>{$c['title']}</h3>";
+			$html .= "<p>{$c['text']}</p>";
+			$html .= "</div>";
+		}
+
+		return $html;
+
+	}
 	private function renderHome()
 	{
 		$categories = $this->getCategories();
@@ -80,10 +121,14 @@ class Flerovium
 		ob_start();
 		try	{
 			$buffer = file_get_contents("Template/{$this->theme}/main.php");
-			// include "Template/{$this->theme}/main.php";
 
 			$er     = "/\{\{AllCats\}\}/";
             $buffer = preg_replace($er, $this->generateNavFromArray($categories), $buffer);
+
+            $a = $this->generatePostHTML($posts);
+
+			$er     = "/\{\{AllPosts\}\}/";
+			$buffer = preg_replace($er, $a, $buffer);
 
             echo $buffer;
 

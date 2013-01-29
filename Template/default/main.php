@@ -23,6 +23,8 @@
 
 	<div id="posts">
 		<h4>Here go the posts</h4>
+
+		{{AllPosts}}
 	</div>
 
 </body>
