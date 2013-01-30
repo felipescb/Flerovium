@@ -1,6 +1,7 @@
 # Flerovium
 
-Flerovium is a very simple database-less blog engine.
+Flerovium is a very simple database-less blog engine wich relys on a GOD Object for everything control.
+I like simple things, and for me, this anti-pattern is simple.
 
 ## Installation
 
