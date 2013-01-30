@@ -115,25 +115,46 @@ class Flerovium
 		return $html;
 
 	}
+
+	private function parseTemplateLanguage($buffer,$postsHTML = null,$categories = null)
+	{
+		if(!is_null($categories)){
+			$er     = "/\{\{AllCats\}\}/";
+            $buffer = preg_replace($er, $this->generateNavFromArray($categories), $buffer);
+      	}
+
+		if(!is_null($postsHTML)){
+			$er     = "/\{\{AllPosts\}\}/";
+			$buffer = preg_replace($er, $postsHTML, $buffer);
+            $er     = "/\{\{CategoryPosts\}\}/";
+			$buffer = preg_replace($er, $postsHTML, $buffer);
+			$er     = "/\{\{ThePost\}\}/";
+			$buffer = preg_replace($er, $postsHTML, $buffer);
+		}
+
+		$er     = "/\{\{Category\}\}/";
+        $buffer = preg_replace($er, $this->category, $buffer);
+
+        $er     = "/\{\{PostName\}\}/";
+        $buffer = preg_replace($er, $this->post, $buffer);
+
+
+		return $buffer;
+	}
+
 	private function renderHome()
 	{
 		$categories = $this->getCategories();
 		$posts = $this->getPosts();
-
+		$posts = $this->generatePostHTML($posts);
 
 		ob_start();
 		try	{
 			$buffer = file_get_contents("Template/{$this->theme}/main.php");
 
-			$er     = "/\{\{AllCats\}\}/";
-            $buffer = preg_replace($er, $this->generateNavFromArray($categories), $buffer);
+			$buffer = $this->parseTemplateLanguage($buffer,$posts,$categories);
 
-            $a = $this->generatePostHTML($posts);
-
-			$er     = "/\{\{AllPosts\}\}/";
-			$buffer = preg_replace($er, $a, $buffer);
-
-            echo $buffer;
+		    echo $buffer;
 
 			ob_end_flush();
 		} catch(Exception $e) {
@@ -146,22 +167,14 @@ class Flerovium
 
 	private function renderCat()
 	{
+		$categories = $this->getCategories();
 		$posts = $this->getPosts($this->category);
-
+		$posts = $this->generatePostHTML($posts);
 		ob_start();
 			try	{
 			$buffer = file_get_contents("Template/{$this->theme}/category.php");
-
-			$er     = "/\{\{Category\}\}/";
-            $buffer = preg_replace($er, $this->category, $buffer);
-
-            $a = $this->generatePostHTML($posts);
-
-			$er     = "/\{\{CategoryPosts\}\}/";
-			$buffer = preg_replace($er, $a, $buffer);
-
+			$buffer = $this->parseTemplateLanguage($buffer,$posts,$categories);
             echo $buffer;
-
 			ob_end_flush();
 		} catch(Exception $e) {
 			ob_clean();
@@ -172,18 +185,14 @@ class Flerovium
 
 	private function renderPost()
 	{
-		$post = $this->getPostContent($this->category,$this->post);
-
+		$categories = $this->getCategories();
+		$post = "<p>";
+		$post .= $this->getPostContent($this->category,$this->post);
+		$post .= "</p>";
 		ob_start();
 			try	{
 			$buffer = file_get_contents("Template/{$this->theme}/post.php");
-
-			$er     = "/\{\{PostName\}\}/";
-            $buffer = preg_replace($er, $this->post, $buffer);
-
-			$er     = "/\{\{ThePost\}\}/";
-			$buffer = preg_replace($er, $post, $buffer);
-
+			$buffer = $this->parseTemplateLanguage($buffer,$post,$categories);
             echo $buffer;
 
 			ob_end_flush();
