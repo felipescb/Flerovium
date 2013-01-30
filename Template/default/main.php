@@ -4,28 +4,31 @@
 	<meta charset="UTF-8">
 	<title></title>
 
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/main.css">
-
+	<link rel="stylesheet" href="Template/default/css/normalize.css">
+	<link rel="stylesheet" href="Template/default/css/main.css">
 </head>
 <body>
 
-	<header>
-		<h1>Welcome to a awesome blog engine</h1>
-	</header>
+	<div id="page" class="hfeed site">
+		<header class="site-header wrapper" role="banner">
+				<div class="row">
+				<hgroup>
+					<h1 class="site-title"> <a href="index.html" title="Read" rel="home">Flerovium</a> </h1>
+					<h2 class="site-description">. . . a simple php blog engine.</h2>
+				</hgroup>
 
-	<nav>
-		<h4>Here go the categorys</h4>
+				<nav id="site-navigation" class="main-navigation" role="navigation">
+					{{AllCats}}
+				</nav>
+				</div>
+		</header>
+				<div id="posts">
 
-		{{AllCats}}
+					<h4>Here go the posts</h4>
 
-	</nav>
+					{{AllPosts}}
+				</div>
 
-	<div id="posts">
-		<h4>Here go the posts</h4>
-
-		{{AllPosts}}
-	</div>
-
-</body>
-</html>
+			</div>
+		</body>
+		</html>

@@ -4,8 +4,8 @@
 	<meta charset="UTF-8">
 	<title></title>
 
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="Template/default/css/normalize.css">
+	<link rel="stylesheet" href="Template/default/css/main.css">
 
 </head>
 <body>
