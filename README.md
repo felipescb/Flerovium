@@ -34,12 +34,12 @@ Inside the theme page you can use some template language flerovium supports:
 
 - If used on main page, it will return all the posts from anywhere in this structure:
 
-<code>
+ ```HTML
 	<div class="post">
 		<h3>TITLE</h3>
 		<p>Text</p>
 	</div>
-</code>
+```
 
 {{Category}}
 
