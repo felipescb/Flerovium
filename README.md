@@ -16,7 +16,9 @@ it a file withouth extension wich it name is the Post Title and it contents the 
 A basic Flerovium theme have 3 files:
 
 -main.php
+
 -category.php
+
 -post.php
 
 The first representes the main page, where it will be showing all posts indepdently of its category.
