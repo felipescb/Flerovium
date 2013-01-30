@@ -69,11 +69,11 @@ class Flerovium
 		$html = '';
 		$html .= '<ul>';
 		foreach ($array as $item) {
-			$html .= '<li><a href="#">' . $item . '</a>';
+			$html .= '<li><a href='.$item.'>' . $item . '</a>';
 			if (is_array($item)) {
 				$html .= '<ul>';
 				foreach ($item as $children) {
-					$html .= '<li><a href="#">' . $item . '</a>';
+					$html .= '<li><a href='.$item.'>' . $item . '</a>';
 				}
 				$html .= '</ul>';
 			}
@@ -144,7 +144,7 @@ class Flerovium
 
 	}
 
-	public function renderCat()
+	private function renderCat()
 	{
 		$posts = $this->getPosts($this->category);
 
@@ -170,10 +170,36 @@ class Flerovium
 		}
 	}
 
+	private function renderPost()
+	{
+		$post = $this->getPostContent($this->category,$this->post);
+
+		ob_start();
+			try	{
+			$buffer = file_get_contents("Template/{$this->theme}/post.php");
+
+			$er     = "/\{\{PostName\}\}/";
+            $buffer = preg_replace($er, $this->post, $buffer);
+
+			$er     = "/\{\{ThePost\}\}/";
+			$buffer = preg_replace($er, $post, $buffer);
+
+            echo $buffer;
+
+			ob_end_flush();
+		} catch(Exception $e) {
+			ob_clean();
+			echo $e->getMessage();
+			ob_end_flush();
+		}
+
+	}
+
 	private function renderControl()
 	{
 		if(is_null($this->category) && is_null($this->post)) $this->renderHome();
-		if(is_null($this->post) && !is_null($this->category)) $this->renderCat();
+		elseif(is_null($this->post) && !is_null($this->category)) $this->renderCat();
+		else $this->renderPost();
 	}
 
 
