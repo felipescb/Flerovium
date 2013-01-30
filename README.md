@@ -16,9 +16,7 @@ it a file withouth extension wich it name is the Post Title and it contents the 
 A basic Flerovium theme have 3 files:
 
 -main.php
-
 -category.php
-
 -post.php
 
 The first representes the main page, where it will be showing all posts indepdently of its category.
@@ -28,36 +26,36 @@ The third just a single post. As seen in web_root/category/postName -- Ex : web_
 
 Inside the theme page you can use some template language flerovium supports:
 
-{{AllCats}}
+**{{AllCats}}**
 
-- This one will return a UL with all the categorys you have in your blog environment.
+-This one will return a UL with all the categorys you have in your blog environment.
 
-{{AllPosts}}
+**{{AllPosts}}**
 
-- If used on main page, it will return all the posts from anywhere in this structure:
+-If used on main page, it will return all the posts from anywhere in this structure:
 
- ```HTML
+```HTML
 	<div class="post">
 		<h3>TITLE</h3>
 		<p>Text</p>
 	</div>
 ```
 
-{{Category}}
+**{{Category}}**
 
-This one will retrive the actual active Category. Don't use it on main page.
+-This one will retrive the actual active Category. Don't use it on main page.
 
-{{CategoryPosts}}
+**{{CategoryPosts}}**
 
-Using this one inside category page on your theme will return in a similar structure as {{AllPosts}} all the posts from that specfic category
+-Using this one inside category page on your theme will return in a similar structure as {{AllPosts}} all the posts from that specfic category
 
-{{PostName}}
+**{{PostName}}**
 
-When used inside single post page it will return the post title.
+-When used inside single post page it will return the post title.
 
-{{ThePost}}
+**{{ThePost}}**
 
-When used inside post page it will return the full post text.
+-When used inside post page it will return the full post text.
 
 - You can check the default theme for better undestaing of this core concepts.
 - Yes, you can have multiple themes, just create wich one in a different page inside Template folder, for changing it you can just going to Core/Flerovium.php and changing the $template on line 8.
