@@ -6,6 +6,7 @@ class Flerovium
 	private $category;
 	private $post;
 	private $theme = 'default';
+	private $renderedPage;
 
 	function __construct($_category = null, $_post = null)
 	{
@@ -69,7 +70,8 @@ class Flerovium
 		$html = '';
 		$html .= '<ul>';
 		foreach ($array as $item) {
-			$html .= '<li><a href='.$item.'>' . $item . '</a>';
+			if($this->renderedPage == 'post') $html .= '<li><a href=../../'.$item.'>' . $item . '</a>';
+			else $html .= '<li><a href='.$item.'>' . $item . '</a>';
 			if (is_array($item)) {
 				$html .= '<ul>';
 				foreach ($item as $children) {
@@ -94,20 +96,21 @@ class Flerovium
 		foreach($postsReferences as $post)
 		{
 			$content[$helper]['title'] = $post['postName'];
+			$content[$helper]['categoryLink'] = $post['postCategory']."/".urlencode($post['postName'])."/";
 			$content[$helper++]['text'] = $this->getPostContent($post['postCategory'],$post['postName']);
 		}
 
 		return $content;
 	}
 
-	private function generatePostHTML($posts)
+	private function generatePostHTML($posts, $cat = null)
 	{
 		$cont = $this->generatePostArray($posts);
 		$html = '';
 
 		foreach($cont as $c){
 			$html .= "<div class='post'>";
-			$html .= "<h3>{$c['title']}</h3>";
+			$html .= "<h3><a href={$c['categoryLink']}>{$c['title']}</a></h3>";
 			$html .= "<p>{$c['text']}</p>";
 			$html .= "</div>";
 		}
@@ -120,23 +123,23 @@ class Flerovium
 	{
 		if(!is_null($categories)){
 			$er     = "/\{\{AllCats\}\}/";
-            $buffer = preg_replace($er, $this->generateNavFromArray($categories), $buffer);
-      	}
+			$buffer = preg_replace($er, $this->generateNavFromArray($categories), $buffer);
+		}
 
 		if(!is_null($postsHTML)){
 			$er     = "/\{\{AllPosts\}\}/";
 			$buffer = preg_replace($er, $postsHTML, $buffer);
-            $er     = "/\{\{CategoryPosts\}\}/";
+			$er     = "/\{\{CategoryPosts\}\}/";
 			$buffer = preg_replace($er, $postsHTML, $buffer);
 			$er     = "/\{\{ThePost\}\}/";
 			$buffer = preg_replace($er, $postsHTML, $buffer);
 		}
 
 		$er     = "/\{\{Category\}\}/";
-        $buffer = preg_replace($er, $this->category, $buffer);
+		$buffer = preg_replace($er, $this->category, $buffer);
 
-        $er     = "/\{\{PostName\}\}/";
-        $buffer = preg_replace($er, $this->post, $buffer);
+		$er     = "/\{\{PostName\}\}/";
+		$buffer = preg_replace($er, $this->post, $buffer);
 
 
 		return $buffer;
@@ -144,6 +147,7 @@ class Flerovium
 
 	private function renderHome()
 	{
+		$this->renderedPage =  'home';
 		$categories = $this->getCategories();
 		$posts = $this->getPosts();
 		$posts = $this->generatePostHTML($posts);
@@ -154,7 +158,7 @@ class Flerovium
 
 			$buffer = $this->parseTemplateLanguage($buffer,$posts,$categories);
 
-		    echo $buffer;
+			echo $buffer;
 
 			ob_end_flush();
 		} catch(Exception $e) {
@@ -167,14 +171,15 @@ class Flerovium
 
 	private function renderCat()
 	{
+		$this->renderedPage = 'category';
 		$categories = $this->getCategories();
 		$posts = $this->getPosts($this->category);
 		$posts = $this->generatePostHTML($posts);
 		ob_start();
-			try	{
+		try	{
 			$buffer = file_get_contents("Template/{$this->theme}/category.php");
 			$buffer = $this->parseTemplateLanguage($buffer,$posts,$categories);
-            echo $buffer;
+			echo $buffer;
 			ob_end_flush();
 		} catch(Exception $e) {
 			ob_clean();
@@ -185,15 +190,16 @@ class Flerovium
 
 	private function renderPost()
 	{
+		$this->renderedPage = 'post';
 		$categories = $this->getCategories();
 		$post = "<p>";
 		$post .= $this->getPostContent($this->category,$this->post);
 		$post .= "</p>";
 		ob_start();
-			try	{
+		try	{
 			$buffer = file_get_contents("Template/{$this->theme}/post.php");
 			$buffer = $this->parseTemplateLanguage($buffer,$post,$categories);
-            echo $buffer;
+			echo $buffer;
 
 			ob_end_flush();
 		} catch(Exception $e) {
