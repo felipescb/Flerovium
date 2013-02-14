@@ -38,9 +38,23 @@ class Flerovium
 			$iterator = new RecursiveDirectoryIterator($dir);
 			$recursiveIterator = new RecursiveIteratorIterator($iterator);
 			foreach ( $recursiveIterator as $entry ) {
-				$posts[] = $entry->getPathname();
+				$time = date("Y/m/d H:i:s",filectime($entry));
+
+				if(in_array($time, array_keys($posts)))
+				{
+					$time++;
+				}
+
+				$posts[$time] = $entry->getPathname();
 			}
-			//TODO : Refatorar isso para algo descente
+
+			krsort($posts,SORT_STRING);
+
+
+			//TODO : Refactor this one for something good
+			//Causa this is solving the problem, but it's a true shit.
+
+
 			foreach($posts as $p){
 				$aux[] = explode("\\",$p);
 			}
@@ -58,8 +72,16 @@ class Flerovium
 			$recursiveIterator = new RecursiveIteratorIterator($iterator);
 			$i = 0;
 			foreach ( $recursiveIterator as $entry ) {
-				$posts[$i]['postCategory'] = $this->category;
-				$posts[$i++]['postName'] =  $entry->getFilename();
+
+				$time = date("Y/m/d H:i:s",filectime($entry));
+
+				if(in_array($time, array_keys($posts)))
+				{
+					$time++;
+				}
+
+				$posts[$time]['postCategory'] = $this->category;
+				$posts[$time]['postName'] =  $entry->getFilename();
 			}
 
 		}
@@ -149,8 +171,13 @@ class Flerovium
 	{
 		$this->renderedPage =  'home';
 		$categories = $this->getCategories();
+
 		$posts = $this->getPosts();
+
+
 		$posts = $this->generatePostHTML($posts);
+
+
 
 		ob_start();
 		try	{
