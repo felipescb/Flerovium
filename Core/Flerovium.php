@@ -29,6 +29,8 @@ class Flerovium
 		return $cat;
 	}
 
+
+
 	private function getPosts($cat = null)
 	{
 		$dir = getcwd() . '\Blog\\';
@@ -50,7 +52,6 @@ class Flerovium
 
 			krsort($posts,SORT_STRING);
 
-
 			//TODO : Refactor this one for something good
 			//Causa this is solving the problem, but it's a true shit.
 
@@ -59,18 +60,21 @@ class Flerovium
 				$aux[] = explode("\\",$p);
 			}
 
+
+			$times = array_keys($posts);
 			$posts = '';
 			$i = 0;
 
 			foreach($aux as $p){
+				$posts[$i]['postTime'] = $times[$i];
 				$posts[$i]['postCategory'] = $p[count($p)-2];
 				$posts[$i++]['postName'] = $p[count($p)-1];
 			}
+
 		} else {
 			$dir .= $cat.'\\';
 			$iterator = new RecursiveDirectoryIterator($dir);
 			$recursiveIterator = new RecursiveIteratorIterator($iterator);
-			$i = 0;
 			foreach ( $recursiveIterator as $entry ) {
 
 				$time = date("Y/m/d H:i:s",filectime($entry));
@@ -80,10 +84,27 @@ class Flerovium
 					$time++;
 				}
 
-				$posts[$time]['postCategory'] = $this->category;
-				$posts[$time]['postName'] =  $entry->getFilename();
+				// $posts[$time]['postCategory'] = $this->category;
+				// $posts[$time]['postName'] =  $entry->getFilename();
+				$posts[$time] =  $entry->getFilename();
 			}
 
+			krsort($posts,SORT_STRING);
+
+
+			$times = array_keys($posts);
+			$posts = array_values($posts);
+
+			$i = 0;
+			$aux = array();
+			foreach($posts as $p)
+			{
+				$aux[$i]['postTime'] = $times[$i];
+				$aux[$i]['postCategory'] = $this->category;
+				$aux[$i]['postName'] = $p;
+				$i++;
+			}
+			$posts = $aux;
 		}
 		return $posts;
 	}
