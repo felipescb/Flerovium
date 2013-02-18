@@ -38,6 +38,7 @@ Inside the theme page you can use some template language flerovium supports:
 ```HTML
 	<div class="post">
 		<h3>TITLE</h3>
+		<span>Date - Time</span>
 		<p>Text</p>
 	</div>
 ```

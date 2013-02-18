@@ -136,9 +136,11 @@ class Flerovium
 	private function generatePostArray($postsReferences)
 	{
 		$helper = 0;
+
 		foreach($postsReferences as $post)
 		{
 			$content[$helper]['title'] = $post['postName'];
+			$content[$helper]['time'] = $post['postTime'];
 			$content[$helper]['categoryLink'] = $post['postCategory']."/".urlencode($post['postName'])."/";
 			$content[$helper++]['text'] = $this->getPostContent($post['postCategory'],$post['postName']);
 		}
@@ -154,6 +156,7 @@ class Flerovium
 		foreach($cont as $c){
 			$html .= "<div class='post'>";
 			$html .= "<h3><a href={$c['categoryLink']}>{$c['title']}</a></h3>";
+			$html .= "<span>{$c['time']}</span>";
 			$html .= "<p>{$c['text']}</p>";
 			$html .= "</div>";
 		}
@@ -194,8 +197,6 @@ class Flerovium
 		$categories = $this->getCategories();
 
 		$posts = $this->getPosts();
-
-
 		$posts = $this->generatePostHTML($posts);
 
 
