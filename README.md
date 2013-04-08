@@ -80,13 +80,6 @@ Nevertheless, I will be working to make it the best I can time pass by.
 
 Felipe de Souza - 2 CBOS / 2 Texas Onion / 1 Milk Shake de Nutella / Solo Steak On Banana Jack
 
-## THANKS
-
-    Great Friend and PHP Wizard : Pedro Barros a.k.a PHPedro
-    Site: phpedro.com
-    From: Rio de Janeiro, Brazil
-
-
 ## License
 
 TODO: Write license
